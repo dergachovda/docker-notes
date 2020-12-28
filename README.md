@@ -1,5 +1,9 @@
 # docker-notes
 
-to run mysql:
-  ```cd ./mysql```
-  ```docker-compose up -d```
+For example:
+
+- run MySQL:
+
+`cd ./mysql`
+
+`docker-compose up -d`
