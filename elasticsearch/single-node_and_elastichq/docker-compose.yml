@@ -1,0 +1,46 @@
+version: '3'
+services:
+  elastichq:
+    image: elastichq/elasticsearch-hq
+    container_name: elastichq
+    environment:
+      - HQ_DEFAULT_URL=http://elasticsearch:9200
+      - HQ_DEBUG=False
+    ports:
+      - 5000:5000
+    networks:
+      - esnet
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    container_name: elasticsearch
+    environment:
+      - cluster.name=elasticsearch
+      - discovery.type=single-node
+      - node.name=node_1
+      - network.host=0.0.0.0
+      - network.publish_host=0.0.0.0
+      - bootstrap.memory_lock=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - http.host=0.0.0.0
+      - transport.host=0.0.0.0
+      - bootstrap.system_call_filter=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - 'path.repo=/opt/elasticsearch/backup'
+    volumes:
+      - ./data:/usr/share/elasticsearch/data
+      - ./backups:/opt/elasticsearch/backup
+    ports:
+      - 9200:9200
+      - 9300:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - esnet
+
+networks:
+  esnet:
+    driver: bridge
